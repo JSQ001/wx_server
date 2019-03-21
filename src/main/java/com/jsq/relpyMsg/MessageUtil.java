@@ -94,6 +94,7 @@ public class MessageUtil {
      * @return xml
      */
     public static String messageToXml(BaseMessage baseMessage) {
+        System.out.println(baseMessage.getClass());
         XStream xstream = new XStream();
         //将xml的根节点替换成<xml>  默认为TextMessage的包名
         xstream.alias("xml", baseMessage.getClass());
@@ -112,7 +113,6 @@ public class MessageUtil {
         return sb.toString();
     }
 
-
     /**
      * 初始化回复消息
      */
@@ -120,7 +120,9 @@ public class MessageUtil {
         String text = "";
         switch (map.get("MsgType")){
             case "text":{   //文本消息
+                // 回复文本消息
                 TextMessage textMessage = new TextMessage().initMessage(map);
+
                 switch (map.get("Content")){//回复特定信息
                     case "1":
                         textMessage.setContent("对啊！我也是这么觉得！小宝贝无敌美！");break;
@@ -130,10 +132,20 @@ public class MessageUtil {
                         textMessage.setContent("暂时还没有什么好的想法啊！");break;
                     default: textMessage.setContent(MessageUtil.menuText());break;  //提示菜单
                 }
-
                 text = MessageUtil.messageToXml(textMessage);
-                System.out.println(textMessage);
-                System.out.println("132"+text);
+
+            }break;
+            case "image": {
+                // 回复图片消息
+                ImageMessage imageMessage = new ImageMessage().initMessage(map);
+
+                //直接构建内部类实例
+                imageMessage.setImage2(imageMessage.new Image(map.get("MediaId")));
+                //通过外部类实例子访问
+                //imageMessage.setImage(map.get("MediaId"));
+                System.out.println(imageMessage);
+                //imageMessage.setImage();
+                text = MessageUtil.messageToXml(imageMessage);
             }break;
             case "event":{  //事件类型
                 String eventType = map.get("Event");
@@ -143,9 +155,6 @@ public class MessageUtil {
                 }
             }
         }
-
-        TextMessage textMessage = new TextMessage();
-        return MessageUtil.messageToXml(textMessage);
-        //return text;
+        return text;
     }
 }

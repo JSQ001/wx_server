@@ -64,14 +64,21 @@ public class BaseMessage {
         MsgId = msgId;
     }
 
+
+    //回复类型
     public  <T> T initMessage(Map<String,String> map) {
         //给实例赋值
         this.setCreateTime();
-        this.setFromUserName(map.get("FromUserName"));
-        this.setToUserName(map.get("ToUserName"));
+        this.setFromUserName(map.get("ToUserName"));
+        this.setToUserName(map.get("FromUserName")); //此处没弄明白什么鬼，暂时这样取巧
         this.setMsgType(map.get("MsgType"));
         this.setMsgId(Long.parseLong(map.get("MsgId")));
         return (T)this;
     }
 
+
+    @Override
+    public String toString() {
+        return this.getToUserName()+"-"+this.getFromUserName()+"-"+this.getCreateTime()+"-"+this.getMsgType()+"-"+this.getMsgId();
+    }
 }

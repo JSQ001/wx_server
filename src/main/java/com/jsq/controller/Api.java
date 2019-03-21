@@ -1,5 +1,6 @@
 package com.jsq.controller;
 
+import com.jsq.token.GetToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,12 @@ import java.net.URISyntaxException;
 @Controller
 @RequestMapping("/api")
 public class Api {
+
+    @GetMapping("/token")
+    public ResponseEntity token (HttpServletRequest request, HttpServletResponse response)throws URISyntaxException {
+        GetToken.getAccess_token();
+        return new ResponseEntity("hello world", HttpStatus.OK);
+    }
     @GetMapping("/test")
     public ResponseEntity test ()throws URISyntaxException {
         System.out.print("hello world");

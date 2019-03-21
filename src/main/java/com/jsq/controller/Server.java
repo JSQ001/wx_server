@@ -2,6 +2,7 @@ package com.jsq.controller;
 
 import com.jsq.relpyMsg.MessageUtil;
 import com.jsq.utils.WX_Util;
+import com.jsq.token.GetToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,7 +27,9 @@ public class Server extends HttpServlet {
     public void run(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println(request.getRequestURL());
         System.out.println(request.getMethod());
-
+        if(GetToken.ACCESS_TOKEN==null){
+            GetToken.getAccess_token();
+        }
         switch (request.getMethod()){
             case "GET":  validateToken(request,response); break;   //token认证
             case "POST": reply(request, response);break;           //回复信息
@@ -43,8 +46,9 @@ public class Server extends HttpServlet {
             out = response.getWriter();
             request.setCharacterEncoding("UTF-8");
             Map<String , String> map = MessageUtil.xmlToMap(request);
-            System.out.println("get"+map);
+            System.out.println("接收："+map);
             String message = MessageUtil.initText(map);
+            System.out.println("回复："+message);
             out.print(message);
         } catch (Exception e) {
             e.printStackTrace();
